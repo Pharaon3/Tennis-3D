@@ -60,18 +60,19 @@ function countdown() {
         stepInitialize()
       }
       t += 1 / 101
-      if(gameState[currentState]['type'] = 'service_taken'){
+      ballPosition()
+      if(gameState[currentState]['type'] == 'service_taken'){
         bounceBall()
       }
-      if(gameState[currentState]['type'] = 'first_serve_fault'){
+      if(gameState[currentState]['type'] == 'first_serve_fault'){
         serve_fault()
-        bounceBall()
+        // bounceBall()
       }
-      if(gameState[currentState]['type'] = 'score_change_tennis'){
+      if(gameState[currentState]['type'] == 'score_change_tennis'){
         kickBall()
-        bounceBall()
+        // bounceBall()
       }
-      if(gameState[currentState]['type'] = 'ball_in_play'){
+      if(gameState[currentState]['type'] == 'ball_in_play'){
         kickBall()
         bounceBall()
       }
@@ -144,8 +145,8 @@ function ballPosition() {
   L = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
   LL = L
   if (L < 0.01) L = 0.01
-  H = L / 4
-  H = max(25, H)
+  H = L / 8
+  // H = max(25, H)
   ll = Math.sqrt((x1 - x) * (x1 - x) + (y1 - y) * (y1 - y))
   hh = H * (1 - (4 * (ll - L / 2) * (ll - L / 2)) / (L * L))
   h1 = ((w2 + ((w1 - w2) / hp) * y) * hh) / w1
@@ -188,28 +189,106 @@ function stepInitialize() {
   t = 0
   if (currentState < gameState.length - 1) {
     currentState = max(currentState + 1, gameState.length - 10)
+    resetCenterFrame()
+  } else {
+    x1 = 1000 * w1;
+    x2 = 1000 * w1;
+    y1 = hp * 1000;
+    y2 = hp * 1000;
+    x_1_1 = mapX(x1, y1)
+    y_1_1 = mapY(x1, y1)
+    x_1_2 = mapX(x2, y2)
+    y_1_2 = mapY(x2, y2)
+    setCenterFrame(gameState[currentState]['name'], teamNames[gameState[currentState]['team']])
   }
   if(gameState[currentState]['game_points']){
     document.getElementById('score').textContent = gameState[currentState]['game_points']['home'] + '-' + gameState[currentState]['game_points']['away']
   }
-  if(gameState[currentState]['type'] = 'service_taken'){
+  if(gameState[currentState]['type'] == 'service_taken'){
     // bounceBall()
     if(gameState[currentState]['team'] == 'home'){
       x_b = mapX(-pitchX / 2, hp * 0.3)
       y_b = mapY(-pitchX / 2, hp * 0.3)
+      x1 = - w1 ;
+      x2 = - w1 ;
+      y1 = hp * 0.3;
+      y2 = hp * 0.3;
+      x_1_1 = mapX(x1, y1)
+      y_1_1 = mapY(x1, y1)
+      x_1_2 = mapX(x2, y2)
+      y_1_2 = mapY(x2, y2)
     } else {
       x_b = mapX(pitchX / 2, hp * 0.3)
       y_b = mapY(pitchX / 2, hp * 0.3)
+      x1 = w1 ;
+      x2 = w1 ;
+      y1 = hp * 0.3;
+      y2 = hp * 0.3;
+      x_1_1 = mapX(x1, y1)
+      y_1_1 = mapY(x1, y1)
+      x_1_2 = mapX(x2, y2)
+      y_1_2 = mapY(x2, y2)
     }
   }
-  if(gameState[currentState]['type'] = 'first_serve_fault'){
+  else if(gameState[currentState]['type'] == 'first_serve_fault'){
     // serve_fault()
+    if(gameState[currentState]['team'] == 'home'){
+      x1 = - w1 ;
+      x2 = 0;
+      y1 = hp * 0.3;
+      y2 = hp * 0.5;
+      x_1_1 = mapX(x1, y1)
+      y_1_1 = mapY(x1, y1)
+      x_1_2 = mapX(x2, y2)
+      y_1_2 = mapY(x2, y2)
+    }
+    if(gameState[currentState]['team'] == 'away'){
+      x1 = w1 ;
+      x2 = 0;
+      y1 = hp * 0.3;
+      y2 = hp * 0.5;
+      x_1_1 = mapX(x1, y1)
+      y_1_1 = mapY(x1, y1)
+      x_1_2 = mapX(x2, y2)
+      y_1_2 = mapY(x2, y2)
+    }
   }
-  if(gameState[currentState]['type'] = 'score_change_tennis'){
+  else if(gameState[currentState]['type'] == 'score_change_tennis'){
+    // kickBall()
+    if(gameState[currentState]['team'] == 'home'){
+      x1 = - w1;
+      x2 = 0.8 * w1;
+      y1 = hp * 0.3;
+      y2 = hp * 0.7;
+      x_1_1 = mapX(x1, y1)
+      y_1_1 = mapY(x1, y1)
+      x_1_2 = mapX(x2, y2)
+      y_1_2 = mapY(x2, y2)
+    }
+    if(gameState[currentState]['team'] == 'away'){
+      x1 = w1;
+      x2 = - w1 * 0.8;
+      y1 = hp * 0.3;
+      y2 = hp * 0.7;
+      x_1_1 = mapX(x1, y1)
+      y_1_1 = mapY(x1, y1)
+      x_1_2 = mapX(x2, y2)
+      y_1_2 = mapY(x2, y2)
+    }
+  }
+  else if(gameState[currentState]['type'] == 'ball_in_play'){
     // kickBall()
   }
-  if(gameState[currentState]['type'] = 'ball_in_play'){
-    // kickBall()
+  else {
+    x1 = -1000 ;
+    x2 = 1000 * w1;
+    y1 = hp * 1000;
+    y2 = hp * 1000;
+    x_1_1 = mapX(x1, y1)
+    y_1_1 = mapY(x1, y1)
+    x_1_2 = mapX(x2, y2)
+    y_1_2 = mapY(x2, y2)
+    setCenterFrame(gameState[currentState]['name'], teamNames[gameState[currentState]['team']])
   }
 }
 function showState() {
@@ -397,6 +476,12 @@ function setCenterFrame(title, content) {
   document.getElementById('ball_shadow').setAttribute('cx', 100000)
   document.getElementById('ball_shadow').setAttribute('cy', 100000)
 }
+function resetCenterFrame() {
+  document.getElementById('center_rect').setAttribute('fill-opacity', 0)
+  document.getElementById('center_text').textContent = ''
+  document.getElementById('center_rect').setAttribute('height', 0)
+  document.getElementById('bottom_text').textContent = ''
+}
 function capitalizeWords(arr) {
   return arr.map(word => {
     const firstLetter = word.charAt(0).toUpperCase();
@@ -442,7 +527,7 @@ function handleEventData(data) {
     if (awayteam['name']) awayteamname = awayteam['name']
     teamNames['home'] = hometeamname;
     teamNames['away'] = awayteamname;
-    // hometeamname = 'This team name is longer than 16 characters'
+    // hometeamname = 'This team name is longer than 19 characters'
     if(hometeamname.length > 19){
       teamNames['home'] = hometeamname.substr(0, 17) + '...';
     }
@@ -566,7 +651,16 @@ function handleEventData(data) {
 
   var newEvents = new Array()
   Object.values(events).forEach((event) => {
-    newEvents.push(event)
+    newEvents.push({
+        name: event['name'], 
+        type: event['type'], 
+        team: event['team'], 
+        updated_uts: event['updated_uts'],
+        uts: event['uts'],
+        _tid: event['_tid'],
+        game_points: event['game_points'],
+        game_score: event['game_score']
+      })
   })
   newEvents.forEach((newEvent) => {
     let flag = 1
@@ -642,5 +736,4 @@ function changeScreenSize() {
     document.getElementById('svg').setAttribute('width', 800 * 0.2)
     document.getElementById('svg').setAttribute('height', 425 * 0.2)
   } 
-
 }
