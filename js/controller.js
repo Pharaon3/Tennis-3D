@@ -61,21 +61,8 @@ function countdown() {
       }
       t += 1 / 101
       ballPosition()
-      if(gameState[currentState]['type'] == 'service_taken'){
-        bounceBall()
-      }
-      if(gameState[currentState]['type'] == 'first_serve_fault'){
-        serve_fault()
-        // bounceBall()
-      }
-      if(gameState[currentState]['type'] == 'score_change_tennis'){
-        kickBall()
-        // bounceBall()
-      }
-      if(gameState[currentState]['type'] == 'ball_in_play'){
-        kickBall()
-        bounceBall()
-      }
+      if(x1 == x2 && y1 == y2) bounceBall()
+      else kickBall()
     }
   }, timeInterval)
 }
@@ -190,97 +177,100 @@ function stepInitialize() {
   if (currentState < gameState.length - 1) {
     currentState = max(currentState + 1, gameState.length - 10)
     resetCenterFrame()
+    if(gameState[currentState]['game_points']){
+      document.getElementById('score').textContent = gameState[currentState]['game_points']['home'] + '-' + gameState[currentState]['game_points']['away']
+    }
+    if(gameState[currentState]['type'] == 'service_taken'){
+      // bounceBall()
+      if(gameState[currentState]['team'] == 'home'){
+        x_b = mapX(-pitchX / 2, hp * 0.3)
+        y_b = mapY(-pitchX / 2, hp * 0.3)
+        x1 = - w1 ;
+        x2 = - w1 ;
+        y1 = hp * 0.3;
+        y2 = hp * 0.3;
+        x_1_1 = mapX(x1, y1)
+        y_1_1 = mapY(x1, y1)
+        x_1_2 = mapX(x2, y2)
+        y_1_2 = mapY(x2, y2)
+      } else {
+        x_b = mapX(pitchX / 2, hp * 0.3)
+        y_b = mapY(pitchX / 2, hp * 0.3)
+        x1 = w1 ;
+        x2 = w1 ;
+        y1 = hp * 0.3;
+        y2 = hp * 0.3;
+        x_1_1 = mapX(x1, y1)
+        y_1_1 = mapY(x1, y1)
+        x_1_2 = mapX(x2, y2)
+        y_1_2 = mapY(x2, y2)
+      }
+    }
+    else if(gameState[currentState]['type'] == 'first_serve_fault'){
+      // serve_fault()
+      if(gameState[currentState]['team'] == 'home'){
+        x1 = - w1 ;
+        x2 = 0;
+        y1 = hp * 0.3;
+        y2 = hp * 0.5;
+        x_1_1 = mapX(x1, y1)
+        y_1_1 = mapY(x1, y1)
+        x_1_2 = mapX(x2, y2)
+        y_1_2 = mapY(x2, y2)
+      }
+      if(gameState[currentState]['team'] == 'away'){
+        x1 = w1 ;
+        x2 = 0;
+        y1 = hp * 0.3;
+        y2 = hp * 0.5;
+        x_1_1 = mapX(x1, y1)
+        y_1_1 = mapY(x1, y1)
+        x_1_2 = mapX(x2, y2)
+        y_1_2 = mapY(x2, y2)
+      }
+    }
+    else if(gameState[currentState]['type'] == 'score_change_tennis'){
+      // kickBall()
+      if(gameState[currentState]['team'] == 'home'){
+        x1 = - w1;
+        x2 = 0.3 * w1;
+        y1 = hp * 0.3;
+        y2 = hp * 0.7;
+        x_1_1 = mapX(x1, y1)
+        y_1_1 = mapY(x1, y1)
+        x_1_2 = mapX(x2, y2)
+        y_1_2 = mapY(x2, y2)
+      }
+      if(gameState[currentState]['team'] == 'away'){
+        x1 = w1;
+        x2 = - w1 * 0.3;
+        y1 = hp * 0.3;
+        y2 = hp * 0.7;
+        x_1_1 = mapX(x1, y1)
+        y_1_1 = mapY(x1, y1)
+        x_1_2 = mapX(x2, y2)
+        y_1_2 = mapY(x2, y2)
+      }
+    }
+    else if(gameState[currentState]['type'] == 'ball_in_play'){
+      // kickBall()
+    }
+    else if(gameState[currentState]['type'] == 'timeinfo'){
+      stepInitialize()
+    }
+    else {
+      x1 = -1000 ;
+      x2 = 1000 * w1;
+      y1 = hp * 1000;
+      y2 = hp * 1000;
+      x_1_1 = mapX(x1, y1)
+      y_1_1 = mapY(x1, y1)
+      x_1_2 = mapX(x2, y2)
+      y_1_2 = mapY(x2, y2)
+      setCenterFrame(gameState[currentState]['name'], teamNames[gameState[currentState]['team']])
+    }
   } else {
     x1 = 1000 * w1;
-    x2 = 1000 * w1;
-    y1 = hp * 1000;
-    y2 = hp * 1000;
-    x_1_1 = mapX(x1, y1)
-    y_1_1 = mapY(x1, y1)
-    x_1_2 = mapX(x2, y2)
-    y_1_2 = mapY(x2, y2)
-    setCenterFrame(gameState[currentState]['name'], teamNames[gameState[currentState]['team']])
-  }
-  if(gameState[currentState]['game_points']){
-    document.getElementById('score').textContent = gameState[currentState]['game_points']['home'] + '-' + gameState[currentState]['game_points']['away']
-  }
-  if(gameState[currentState]['type'] == 'service_taken'){
-    // bounceBall()
-    if(gameState[currentState]['team'] == 'home'){
-      x_b = mapX(-pitchX / 2, hp * 0.3)
-      y_b = mapY(-pitchX / 2, hp * 0.3)
-      x1 = - w1 ;
-      x2 = - w1 ;
-      y1 = hp * 0.3;
-      y2 = hp * 0.3;
-      x_1_1 = mapX(x1, y1)
-      y_1_1 = mapY(x1, y1)
-      x_1_2 = mapX(x2, y2)
-      y_1_2 = mapY(x2, y2)
-    } else {
-      x_b = mapX(pitchX / 2, hp * 0.3)
-      y_b = mapY(pitchX / 2, hp * 0.3)
-      x1 = w1 ;
-      x2 = w1 ;
-      y1 = hp * 0.3;
-      y2 = hp * 0.3;
-      x_1_1 = mapX(x1, y1)
-      y_1_1 = mapY(x1, y1)
-      x_1_2 = mapX(x2, y2)
-      y_1_2 = mapY(x2, y2)
-    }
-  }
-  else if(gameState[currentState]['type'] == 'first_serve_fault'){
-    // serve_fault()
-    if(gameState[currentState]['team'] == 'home'){
-      x1 = - w1 ;
-      x2 = 0;
-      y1 = hp * 0.3;
-      y2 = hp * 0.5;
-      x_1_1 = mapX(x1, y1)
-      y_1_1 = mapY(x1, y1)
-      x_1_2 = mapX(x2, y2)
-      y_1_2 = mapY(x2, y2)
-    }
-    if(gameState[currentState]['team'] == 'away'){
-      x1 = w1 ;
-      x2 = 0;
-      y1 = hp * 0.3;
-      y2 = hp * 0.5;
-      x_1_1 = mapX(x1, y1)
-      y_1_1 = mapY(x1, y1)
-      x_1_2 = mapX(x2, y2)
-      y_1_2 = mapY(x2, y2)
-    }
-  }
-  else if(gameState[currentState]['type'] == 'score_change_tennis'){
-    // kickBall()
-    if(gameState[currentState]['team'] == 'home'){
-      x1 = - w1;
-      x2 = 0.8 * w1;
-      y1 = hp * 0.3;
-      y2 = hp * 0.7;
-      x_1_1 = mapX(x1, y1)
-      y_1_1 = mapY(x1, y1)
-      x_1_2 = mapX(x2, y2)
-      y_1_2 = mapY(x2, y2)
-    }
-    if(gameState[currentState]['team'] == 'away'){
-      x1 = w1;
-      x2 = - w1 * 0.8;
-      y1 = hp * 0.3;
-      y2 = hp * 0.7;
-      x_1_1 = mapX(x1, y1)
-      y_1_1 = mapY(x1, y1)
-      x_1_2 = mapX(x2, y2)
-      y_1_2 = mapY(x2, y2)
-    }
-  }
-  else if(gameState[currentState]['type'] == 'ball_in_play'){
-    // kickBall()
-  }
-  else {
-    x1 = -1000 ;
     x2 = 1000 * w1;
     y1 = hp * 1000;
     y2 = hp * 1000;
