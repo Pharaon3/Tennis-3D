@@ -5,6 +5,7 @@ var currentState = 0
 var updated_uts1 = 0, updated_uts = 0
 var currentTime, matchStartDate;
 var ptime, setTimer, stopTime = 0
+var serveSide, isServe;
 
 var topLeft = 123, topPosition = 238
 var pitchX = 700, pitchY = 112
@@ -67,6 +68,8 @@ function countdown() {
   }, timeInterval)
 }
 function load() {
+  serveSide = -1;
+  isServe = false;
   ttt = 0
   xb = x1 + w1
   yb = y1
@@ -181,10 +184,17 @@ function stepInitialize() {
       document.getElementById('score').textContent = gameState[currentState]['game_points']['home'] + '-' + gameState[currentState]['game_points']['away']
     }
     if(gameState[currentState]['type'] == 'service_taken'){
-      // bounceBall()
+      if(!isServe)  serveSide = - serveSide
+      isServe = true
       if(gameState[currentState]['team'] == 'home'){
-        x_b = mapX(-pitchX / 2, hp * 0.3)
-        y_b = mapY(-pitchX / 2, hp * 0.3)
+        if(serveSide < 0){
+          x_b = mapX(-pitchX / 2, hp * 0.3)
+          y_b = mapY(-pitchX / 2, hp * 0.3)
+        }
+        else {
+          x_b = mapX(-pitchX / 2, hp * 0.7)
+          y_b = mapY(-pitchX / 2, hp * 0.7)
+        }
         x1 = - w1 ;
         x2 = - w1 ;
         y1 = hp * 0.3;
@@ -194,8 +204,14 @@ function stepInitialize() {
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
       } else {
-        x_b = mapX(pitchX / 2, hp * 0.3)
-        y_b = mapY(pitchX / 2, hp * 0.3)
+        if(serveSide == 0){
+          x_b = mapX(pitchX / 2, hp * 0.3)
+          y_b = mapY(pitchX / 2, hp * 0.3)
+        }
+        else {
+          x_b = mapX(pitchX / 2, hp * 0.7)
+          y_b = mapY(pitchX / 2, hp * 0.7)
+        }
         x1 = w1 ;
         x2 = w1 ;
         y1 = hp * 0.3;
@@ -207,6 +223,7 @@ function stepInitialize() {
       }
     }
     else if(gameState[currentState]['type'] == 'first_serve_fault'){
+      isServe = false
       // serve_fault()
       if(gameState[currentState]['team'] == 'home'){
         x1 = - w1 ;
@@ -230,6 +247,7 @@ function stepInitialize() {
       }
     }
     else if(gameState[currentState]['type'] == 'score_change_tennis'){
+      isServe = false
       // kickBall()
       if(gameState[currentState]['team'] == 'home'){
         x1 = - w1;
@@ -253,12 +271,15 @@ function stepInitialize() {
       }
     }
     else if(gameState[currentState]['type'] == 'ball_in_play'){
+      isServe = false
       // kickBall()
     }
     else if(gameState[currentState]['type'] == 'timeinfo'){
+      isServe = false
       stepInitialize()
     }
     else {
+      isServe = false
       x1 = -1000 ;
       x2 = 1000 * w1;
       y1 = hp * 1000;
@@ -270,15 +291,56 @@ function stepInitialize() {
       setCenterFrame(gameState[currentState]['name'], teamNames[gameState[currentState]['team']])
     }
   } else {
-    x1 = 1000 * w1;
-    x2 = 1000 * w1;
-    y1 = hp * 1000;
-    y2 = hp * 1000;
-    x_1_1 = mapX(x1, y1)
-    y_1_1 = mapY(x1, y1)
-    x_1_2 = mapX(x2, y2)
-    y_1_2 = mapY(x2, y2)
-    setCenterFrame(gameState[currentState]['name'], teamNames[gameState[currentState]['team']])
+    if(gameState[currentState]['type'] == 'service_taken'){
+      if(!isServe)  serveSide = - serveSide
+      isServe = true
+      if(gameState[currentState]['team'] == 'home'){
+        if(serveSide < 0){
+          x_b = mapX(-pitchX / 2, hp * 0.3)
+          y_b = mapY(-pitchX / 2, hp * 0.3)
+        }
+        else {
+          x_b = mapX(-pitchX / 2, hp * 0.7)
+          y_b = mapY(-pitchX / 2, hp * 0.7)
+        }
+        x1 = - w1 ;
+        x2 = - w1 ;
+        y1 = hp * 0.3;
+        y2 = hp * 0.3;
+        x_1_1 = mapX(x1, y1)
+        y_1_1 = mapY(x1, y1)
+        x_1_2 = mapX(x2, y2)
+        y_1_2 = mapY(x2, y2)
+      } else {
+        if(serveSide == 0){
+          x_b = mapX(pitchX / 2, hp * 0.3)
+          y_b = mapY(pitchX / 2, hp * 0.3)
+        }
+        else {
+          x_b = mapX(pitchX / 2, hp * 0.7)
+          y_b = mapY(pitchX / 2, hp * 0.7)
+        }
+        x1 = w1 ;
+        x2 = w1 ;
+        y1 = hp * 0.3;
+        y2 = hp * 0.3;
+        x_1_1 = mapX(x1, y1)
+        y_1_1 = mapY(x1, y1)
+        x_1_2 = mapX(x2, y2)
+        y_1_2 = mapY(x2, y2)
+      }
+    }
+    else {
+      x1 = 1000 * w1;
+      x2 = 1000 * w1;
+      y1 = hp * 1000;
+      y2 = hp * 1000;
+      x_1_1 = mapX(x1, y1)
+      y_1_1 = mapY(x1, y1)
+      x_1_2 = mapX(x2, y2)
+      y_1_2 = mapY(x2, y2)
+      setCenterFrame(gameState[currentState]['name'], teamNames[gameState[currentState]['team']])
+    }
   }
 }
 function showState() {
@@ -641,9 +703,21 @@ function handleEventData(data) {
 
   var newEvents = new Array()
   Object.values(events).forEach((event) => {
+    if(event['type'] != 'timeinfo' && event['type'] != 'periodscore' )
     newEvents.push({
         name: event['name'], 
         type: event['type'], 
+        team: event['team'], 
+        updated_uts: event['updated_uts'],
+        uts: event['uts'],
+        _tid: event['_tid'],
+        game_points: event['game_points'],
+        game_score: event['game_score']
+      })
+    if(event['type'] == "score_change_tennis")
+    newEvents.push({
+        name: event['name'], 
+        type: 'score_change_tennis1',
         team: event['team'], 
         updated_uts: event['updated_uts'],
         uts: event['uts'],
@@ -678,52 +752,13 @@ function changeScreenSize() {
   screenHeight = window.innerHeight
   screenWidth = window.innerWidth
 
-  document.getElementById('scale').setAttribute('transform', 'scale(1.5)')
-  document.getElementById('svg').setAttribute('width', 800 * 1.5)
-  document.getElementById('svg').setAttribute('height', 425 * 1.5)
-  if(screenWidth < 1220 || screenHeight < 660){
-    document.getElementById('scale').setAttribute('transform', 'scale(1.3)')
-    document.getElementById('svg').setAttribute('width', 800 * 1.3)
-    document.getElementById('svg').setAttribute('height', 425 * 1.3)
-  } 
-  if(screenWidth < 1060 || screenHeight < 570){
-    document.getElementById('scale').setAttribute('transform', 'scale(1.1)')
-    document.getElementById('svg').setAttribute('width', 800 * 1.1)
-    document.getElementById('svg').setAttribute('height', 425 * 1.1)
-  } 
-  if(screenWidth < 900 || screenHeight < 480){
-    document.getElementById('scale').setAttribute('transform', 'scale(1)')
-    document.getElementById('svg').setAttribute('width', 800 * 1)
-    document.getElementById('svg').setAttribute('height', 425 * 1)
-  } 
-  if(screenWidth < 820 || screenHeight < 450){
-    document.getElementById('scale').setAttribute('transform', 'scale(0.8)')
-    document.getElementById('svg').setAttribute('width', 800 * 0.8)
-    document.getElementById('svg').setAttribute('height', 425 * 0.8)
-  } 
-  if(screenWidth < 660 || screenHeight < 350){
-    document.getElementById('scale').setAttribute('transform', 'scale(0.6)')
-    document.getElementById('svg').setAttribute('width', 800 * 0.6)
-    document.getElementById('svg').setAttribute('height', 425 * 0.6)
-  } 
-  if(screenWidth < 500 || screenHeight < 280){
-    document.getElementById('scale').setAttribute('transform', 'scale(0.5)')
-    document.getElementById('svg').setAttribute('width', 800 * 0.5)
-    document.getElementById('svg').setAttribute('height', 425 * 0.5)
-  } 
-  if(screenWidth < 420 || screenHeight < 230){
-    document.getElementById('scale').setAttribute('transform', 'scale(0.4)')
-    document.getElementById('svg').setAttribute('width', 800 * 0.4)
-    document.getElementById('svg').setAttribute('height', 425 * 0.4)
-  } 
-  if(screenWidth < 340 || screenHeight < 190){
-    document.getElementById('scale').setAttribute('transform', 'scale(0.3)')
-    document.getElementById('svg').setAttribute('width', 800 * 0.3)
-    document.getElementById('svg').setAttribute('height', 425 * 0.3)
-  } 
-  if(screenWidth < 260 || screenHeight < 150){
-    document.getElementById('scale').setAttribute('transform', 'scale(0.2)')
-    document.getElementById('svg').setAttribute('width', 800 * 0.2)
-    document.getElementById('svg').setAttribute('height', 425 * 0.2)
-  } 
+  scale = min(screenWidth / 800, screenHeight / 425);
+
+  document.getElementById('scale').setAttribute('transform', 'scale(' + scale + ')')
+  document.getElementById('svg').setAttribute('width', 800 * scale)
+  document.getElementById('svg').setAttribute('height', 425 * scale)
+}
+function min(a, b) {
+  if(a > b) return b;
+  return a;
 }
