@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>Tennis 3D version</title>
   <meta name="title" content="Tennis SVG Test" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="./js/controller.js"></script>
 </head>
 
@@ -15,6 +15,7 @@
       font-family: "InriaSans";
       src: url("./fonts/InriaSans-Regular.ttf");
     }
+
     @font-face {
       font-family: "InriaSans-Bold";
       src: url("./fonts/InriaSans-Bold.ttf");
@@ -28,7 +29,7 @@
         height: 97vh;
         justify-content: center;
       ">
-    <svg id = 'svg' width="800" height="425">
+    <svg id='svg' width="800" height="425">
       <filter id="shadow" color-interpolation-filters="sRGB">
         <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.7" />
       </filter>
@@ -90,7 +91,7 @@
           <stop offset="100%" style="stop-color: rgb(255, 0, 0); stop-opacity: 0;" />
         </linearGradient>
       </defs>
-      <g id = 'scale' transform='scale(1)'>
+      <g id='scale' transform='scale(1)'>
         <g id="pitch">
           <image href="./media/pitch.png" x="0" y="0" width="800" />
           <!-- <polygon id = "pitch-poly" points="123, 238 677, 238 750, 350 50, 350 " style="fill:red;fill-opacity:0.5;" /> -->
@@ -118,57 +119,48 @@
             <text id="substitutionInPlayer" fill="#fff" font-size="16" font-family="InriaSans" x="835" y="618"
               fill-opacity="0.9" text-anchor="end"> </text>
           </g>
-          <line id="stateBoardLine" x1="385" y1="493" x2="385" y2="523" style="
+          <g id='homeStateG' transform='translate(120, 270)'>
+            <line x1="0" y1="-15" x2="0" y2="15" style="
                 stroke: rgb(205, 205, 255);
                 stroke-width: 2;
-              " stroke-opacity='0' />
-          <text id="ballState" fill="#fff" font-size="14" font-family="InriaSans" x="380" y="505" fill-opacity="0.9"
-            text-anchor="end">
-          </text>
-          <text id="holder" fill="#a1e36f" font-size="14" font-family="InriaSans" x="380" y="520" fill-opacity="0.9"
-            text-anchor="end">
+              " stroke-opacity='1' />
+            <text id="homeState" fill="#fff" font-size="14" font-family="InriaSans" x="5" y="-3" fill-opacity="0.9"
+              text-anchor="start"> ballstate
+            </text>
+            <text id="homeStateN" fill="#a1e36f" font-size="14" font-family="InriaSans" x="5" y="12" fill-opacity="0.9"
+              text-anchor="start"> holder
+            </text>
+          </g>
+          <g id='awayStateG' transform='translate(710, 310)'>
+            <line x1="0" y1="-15" x2="0" y2="15" style="
+                stroke: rgb(205, 205, 255);
+                stroke-width: 2;
+              " stroke-opacity='1' />
+            <text id="awayState" fill="#fff" font-size="14" font-family="InriaSans" x="-5" y="-3" fill-opacity="0.9"
+              text-anchor="end"> ballstate
+            </text>
+            <text id="awayStateN" fill="#a1e36f" font-size="14" font-family="InriaSans" x="-5" y="12" fill-opacity="0.9"
+              text-anchor="end"> holder
+            </text>
+          </g>
 
-          </text>
 
-          <rect
-            id="center_rect"
-            x="210"
-            y="200"
-            width="380"
-            height="60"
-            style="
+          <rect id="center_rect" x="210" y="200" width="380" height="60" style="
               fill: black;
               stroke: grey;
               stroke-width: 0;
               stroke-opacity: 1;
-            "
-            fill-opacity = '0'
-          />
-          <text
-            id="center_text"
-            fill="#fff"
-            font-size="38"
-            font-family="InriaSans"
-            x="400"
-            y="260"
-            fill-opacity="1"
-            text-anchor="middle"
-          ></text>
-          <text
-            id="bottom_text"
-            fill="#fff"
-            font-size="30"
-            font-family="InriaSans"
-            x="400"
-            y="300"
-            fill-opacity="0.71"
-            text-anchor="middle"
-          ></text>
+            " fill-opacity='0' />
+          <text id="center_text" fill="#fff" font-size="38" font-family="InriaSans" x="400" y="260" fill-opacity="1"
+            text-anchor="middle"></text>
+          <text id="bottom_text" fill="#fff" font-size="30" font-family="InriaSans" x="400" y="300" fill-opacity="0.71"
+            text-anchor="middle"></text>
 
           <g id="stateLabels" transform='translate(400,500)' filter="url(#shadow)" style='display: none;'>
-            <rect id='stateRect' x="-150" y="-45" width="150" height="40" rx="20" ry="20" fill-opacity = '0' fill='cyan'/>
-            <circle id='jerseyCircle' cx = '-20' cy = '-25' r = '20' fill = '#000' fill-opacity='0'/>
-            <g id = 'stateJersey' transform = 'translate(-20, -25)'>
+            <rect id='stateRect' x="-150" y="-45" width="150" height="40" rx="20" ry="20" fill-opacity='0'
+              fill='cyan' />
+            <circle id='jerseyCircle' cx='-20' cy='-25' r='20' fill='#000' fill-opacity='0' />
+            <g id='stateJersey' transform='translate(-20, -25)'>
               <g fill="none" fill-rule="evenodd" filter="url(#shadow)" transform="scale(0.1)">
                 <g transform="translate(-150, -150)">
                   <defs>
@@ -219,9 +211,9 @@
                       </g>
                     </g>
                   </g>
-                  <text y="35%" x="50%" text-anchor="middle" class="sr-jersey3d__player-number srt-stroke-soccer-promotion-5"
-                    font-size="30" stroke-width="2" font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2"
-                    fill="#ffffff"></text>
+                  <text y="35%" x="50%" text-anchor="middle"
+                    class="sr-jersey3d__player-number srt-stroke-soccer-promotion-5" font-size="30" stroke-width="2"
+                    font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2" fill="#ffffff"></text>
                   <text y="35%" x="50%" text-anchor="middle" class="sr-jersey3d__player-number-overlay" font-size="30"
                     stroke-width="0" font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2" fill="#ffffff"
                     stroke="transparent"></text>
@@ -248,20 +240,27 @@
           <text id="period" fill="#fff" font-size="18" font-family="InriaSans" x="391" y="33" fill-opacity="1"
             text-anchor="end">
           </text>
-          <rect id="center_rect" x="255" y="230" width="290" height="110" style="fill: black; stroke: grey; stroke-width: 0; stroke-opacity: 0;" fill-opacity='0' />
-          <text id="center_text" fill="#fff" font-size="38" font-family="InriaSans" x="400" y="280" fill-opacity="1" text-anchor="middle"></text>
+          <rect id="center_rect" x="255" y="230" width="290" height="110"
+            style="fill: black; stroke: grey; stroke-width: 0; stroke-opacity: 0;" fill-opacity='0' />
+          <text id="center_text" fill="#fff" font-size="38" font-family="InriaSans" x="400" y="280" fill-opacity="1"
+            text-anchor="middle"></text>
           <text id="bottom_text" fill="#fff" font-size="32" font-family="InriaSans" x="400" y="310" fill-opacity="0.71"
             text-anchor="middle"></text>
           <text id="bottom2_text" fill="#fff" font-size="24" font-family="InriaSans" x="475" y="610" fill-opacity="0.71"
             text-anchor="middle"></text>
-          <g  transform="translate(20, -140)">
-            <g id = "scoreTableGroup"  transform="scale(0.8)">
-              <rect id="scoreTableBoard" x="320" y="300" width="310" height="100" rx="5" ry="5" fill= '#204265' fill-opacity='0' />
-              <rect id="scoreTable" x="330" y="325" width="290" height="70" rx="2" ry="2" fill= '#204265' fill-opacity='0.5' />
-              <text id="tableName1" fill="#fff" font-size="10" font-family="InriaSans" x="395" y="317" fill-opacity="0.71" text-anchor="middle">1st Set</text>
-              <text id="tableName2" fill="#fff" font-size="10" font-family="InriaSans" x="460" y="317" fill-opacity="0.71" text-anchor="middle">2nd Set</text>
-              <text id="tableName3" fill="#fff" font-size="10" font-family="InriaSans" x="525" y="317" fill-opacity="0.71" text-anchor="middle">3rd Set</text>
-              <g id = 'scoreTableJerseyHome' transform = 'translate(345, 343)'>
+          <g transform="translate(20, -140)">
+            <g id="scoreTableGroup" transform="scale(0.8)">
+              <rect id="scoreTableBoard" x="320" y="300" width="310" height="100" rx="5" ry="5" fill='#204265'
+                fill-opacity='0' />
+              <rect id="scoreTable" x="330" y="325" width="290" height="70" rx="2" ry="2" fill='#204265'
+                fill-opacity='0.5' />
+              <text id="tableName1" fill="#fff" font-size="10" font-family="InriaSans" x="395" y="317"
+                fill-opacity="0.71" text-anchor="middle">1st Set</text>
+              <text id="tableName2" fill="#fff" font-size="10" font-family="InriaSans" x="460" y="317"
+                fill-opacity="0.71" text-anchor="middle">2nd Set</text>
+              <text id="tableName3" fill="#fff" font-size="10" font-family="InriaSans" x="525" y="317"
+                fill-opacity="0.71" text-anchor="middle">3rd Set</text>
+              <g id='scoreTableJerseyHome' transform='translate(345, 343)'>
                 <g fill="none" fill-rule="evenodd" filter="url(#shadow)" transform="scale(0.08)">
                   <g transform="translate(-150, -150)">
                     <defs>
@@ -312,16 +311,16 @@
                         </g>
                       </g>
                     </g>
-                    <text y="35%" x="50%" text-anchor="middle" class="sr-jersey3d__player-number srt-stroke-soccer-promotion-5"
-                      font-size="30" stroke-width="2" font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2"
-                      fill="#ffffff"></text>
+                    <text y="35%" x="50%" text-anchor="middle"
+                      class="sr-jersey3d__player-number srt-stroke-soccer-promotion-5" font-size="30" stroke-width="2"
+                      font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2" fill="#ffffff"></text>
                     <text y="35%" x="50%" text-anchor="middle" class="sr-jersey3d__player-number-overlay" font-size="30"
                       stroke-width="0" font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2" fill="#ffffff"
                       stroke="transparent"></text>
                   </g>
                 </g>
               </g>
-              <g id = 'scoreTableJerseyAway' transform = 'translate(345, 377)'>
+              <g id='scoreTableJerseyAway' transform='translate(345, 377)'>
                 <g fill="none" fill-rule="evenodd" filter="url(#shadow)" transform="scale(0.08)">
                   <g transform="translate(-150, -150)">
                     <defs>
@@ -372,23 +371,31 @@
                         </g>
                       </g>
                     </g>
-                    <text y="35%" x="50%" text-anchor="middle" class="sr-jersey3d__player-number srt-stroke-soccer-promotion-5"
-                      font-size="30" stroke-width="2" font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2"
-                      fill="#ffffff"></text>
+                    <text y="35%" x="50%" text-anchor="middle"
+                      class="sr-jersey3d__player-number srt-stroke-soccer-promotion-5" font-size="30" stroke-width="2"
+                      font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2" fill="#ffffff"></text>
                     <text y="35%" x="50%" text-anchor="middle" class="sr-jersey3d__player-number-overlay" font-size="30"
                       stroke-width="0" font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2" fill="#ffffff"
                       stroke="transparent"></text>
                   </g>
                 </g>
               </g>
-              <line id="scoreTableMiddleLine" x1="330" y1="360" x2="620" y2="360" style=" stroke: rgb(10, 10, 10); stroke-width: 1; " stroke-opacity='0.8' />
-              <line id="scoreTableVerticalLine" x1="360" y1="325" x2="360" y2="395" style=" stroke: rgb(10, 10, 10); stroke-width: 1; " stroke-opacity='0.8' />
-              <text id="homeScore1" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="395" y="350" fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
-              <text id="homeScore2" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="460" y="350" fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
-              <text id="homeScore3" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="525" y="350" fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
-              <text id="awayScore1" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="395" y="380" fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
-              <text id="awayScore2" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="460" y="380" fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
-              <text id="awayScore3" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="525" y="380" fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
+              <line id="scoreTableMiddleLine" x1="330" y1="360" x2="620" y2="360"
+                style=" stroke: rgb(10, 10, 10); stroke-width: 1; " stroke-opacity='0.8' />
+              <line id="scoreTableVerticalLine" x1="360" y1="325" x2="360" y2="395"
+                style=" stroke: rgb(10, 10, 10); stroke-width: 1; " stroke-opacity='0.8' />
+              <text id="homeScore1" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="395" y="350"
+                fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
+              <text id="homeScore2" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="460" y="350"
+                fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
+              <text id="homeScore3" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="525" y="350"
+                fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
+              <text id="awayScore1" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="395" y="380"
+                fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
+              <text id="awayScore2" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="460" y="380"
+                fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
+              <text id="awayScore3" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="525" y="380"
+                fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
             </g>
           </g>
         </g>
@@ -416,8 +423,10 @@
             id="2_path-5"></path>
         </defs>
         <g id='teams'>
-          <rect id="homeTeamNameRect" x="40" y="50" width="250" height="40" rx="20" ry="20" style="fill: black; stroke: grey; stroke-width: 0; stroke-opacity: 0;" fill-opacity='1' />
-          <rect id="awayTeamNameRect" x="510" y="50" width="250" height="40" rx="20" ry="20" style="fill: black; stroke: grey; stroke-width: 0; stroke-opacity: 0;" fill-opacity='1' />
+          <rect id="homeTeamNameRect" x="40" y="50" width="250" height="40" rx="20" ry="20"
+            style="fill: black; stroke: grey; stroke-width: 0; stroke-opacity: 0;" fill-opacity='1' />
+          <rect id="awayTeamNameRect" x="510" y="50" width="250" height="40" rx="20" ry="20"
+            style="fill: black; stroke: grey; stroke-width: 0; stroke-opacity: 0;" fill-opacity='1' />
           <g transform='translate(-75, -200)'>
             <g id="leftJersey" fill="none" fill-rule="evenodd" filter="url(#shadow)" transform="scale(0.15)">
               <g transform="translate(766, 1600)">
@@ -469,9 +478,9 @@
                     </g>
                   </g>
                 </g>
-                <text y="35%" x="50%" text-anchor="middle" class="sr-jersey3d__player-number srt-stroke-soccer-promotion-5"
-                  font-size="30" stroke-width="2" font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2"
-                  fill="#ffffff"></text>
+                <text y="35%" x="50%" text-anchor="middle"
+                  class="sr-jersey3d__player-number srt-stroke-soccer-promotion-5" font-size="30" stroke-width="2"
+                  font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2" fill="#ffffff"></text>
                 <text y="35%" x="50%" text-anchor="middle" class="sr-jersey3d__player-number-overlay" font-size="30"
                   stroke-width="0" font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2" fill="#ffffff"
                   stroke="transparent"></text>
@@ -527,9 +536,9 @@
                     </g>
                   </g>
                 </g>
-                <text y="35%" x="50%" text-anchor="middle" class="sr-jersey3d__player-number srt-stroke-soccer-promotion-5"
-                  font-size="30" stroke-width="2" font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2"
-                  fill="#ffffff"></text>
+                <text y="35%" x="50%" text-anchor="middle"
+                  class="sr-jersey3d__player-number srt-stroke-soccer-promotion-5" font-size="30" stroke-width="2"
+                  font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2" fill="#ffffff"></text>
                 <text y="35%" x="50%" text-anchor="middle" class="sr-jersey3d__player-number-overlay" font-size="30"
                   stroke-width="0" font-weight="300" dy="0.1em" dx="-0.05em" letter-spacing="2" fill="#ffffff"
                   stroke="transparent"></text>

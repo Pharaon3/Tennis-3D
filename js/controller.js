@@ -6,6 +6,7 @@ var updated_uts1 = 0, updated_uts = 0
 var currentTime, matchStartDate;
 var ptime, setTimer, stopTime = 0
 var serveSide, isServe;
+var serveTeam;
 
 var topLeft = 123, topPosition = 238
 var pitchX = 700, pitchY = 112
@@ -69,6 +70,7 @@ function countdown() {
 }
 function load() {
   serveSide = -1;
+  serveTeam = 'home'
   isServe = false;
   ttt = 0
   xb = x1 + w1
@@ -118,8 +120,8 @@ function bounceBall() {
   document.getElementById('ball').setAttribute('width', ballRadius)
   document.getElementById('ball_shadow').setAttribute('cx', x_b + w2 + topLeft)
   document.getElementById('ball_shadow').setAttribute('cy', y_1 + topPosition)
-  // document.getElementById('ball_shadow').setAttribute('rx', ((ballRadius + 15) * H * 0.25) / (H * (1 - 4* (tt - 0.5) * (tt - 0.5)) + H))
-  // document.getElementById('ball_shadow').setAttribute('ry', ((ballRadius + 15) * H * 0.25) / (H * (1 - 4* (tt - 0.5) * (tt - 0.5)) + H) / 2)
+  document.getElementById('ball_shadow').setAttribute('rx', ((ballRadius + 15) * H * 0.25) / (H * (1 - 4* (tt - 0.5) * (tt - 0.5)) + H))
+  document.getElementById('ball_shadow').setAttribute('ry', ((ballRadius + 15) * H * 0.25) / (H * (1 - 4* (tt - 0.5) * (tt - 0.5)) + H) / 2)
 }
 function serve_fault() {
   // body...
@@ -186,6 +188,7 @@ function stepInitialize() {
     if(gameState[currentState]['type'] == 'service_taken'){
       if(!isServe)  serveSide = - serveSide
       isServe = true
+      serveTeam = gameState[currentState]['team'];
       if(gameState[currentState]['team'] == 'home'){
         if(serveSide < 0){
           x_b = mapX(-pitchX / 2, hp * 0.3)
@@ -249,26 +252,56 @@ function stepInitialize() {
     else if(gameState[currentState]['type'] == 'score_change_tennis'){
       isServe = false
       // kickBall()
-      if(gameState[currentState]['team'] == 'home'){
+      if(serveTeam == 'home'){
+        if(serveSide > 0){
+          y1 = hp * 0.3;
+          y2 = hp * 0.7;
+        }
+        else {
+          y1 = hp * 0.7;
+          y2 = hp * 0.3;
+        }
         x1 = - w1;
         x2 = 0.3 * w1;
-        y1 = hp * 0.3;
-        y2 = hp * 0.7;
         x_1_1 = mapX(x1, y1)
         y_1_1 = mapY(x1, y1)
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
       }
-      if(gameState[currentState]['team'] == 'away'){
+      if(serveTeam == 'away'){
         x1 = w1;
         x2 = - w1 * 0.3;
-        y1 = hp * 0.3;
-        y2 = hp * 0.7;
+        if(serveSide > 0){
+          y1 = hp * 0.3;
+          y2 = hp * 0.7;
+        }
+        else {
+          y1 = hp * 0.7;
+          y2 = hp * 0.3;
+        }
         x_1_1 = mapX(x1, y1)
         y_1_1 = mapY(x1, y1)
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
       }
+    }
+    else if(gameState[currentState]['type'] == 'score_change_tennis1'){
+      isServe = false
+      // kickBall()
+      x1 = -1000 ;
+      x2 = 1000 * w1;
+      y1 = hp * 1000;
+      y2 = hp * 1000;
+      setCenterFrame('score', teamNames[gameState[currentState]['team']])
+    }
+    else if(gameState[currentState]['type'] == 'first_serve_fault1'){
+      isServe = false
+      // kickBall()
+      x1 = -1000 ;
+      x2 = 1000 * w1;
+      y1 = hp * 1000;
+      y2 = hp * 1000;
+      setCenterFrame('first serve fault', teamNames[gameState[currentState]['team']])
     }
     else if(gameState[currentState]['type'] == 'ball_in_play'){
       isServe = false
@@ -276,7 +309,6 @@ function stepInitialize() {
     }
     else if(gameState[currentState]['type'] == 'timeinfo'){
       isServe = false
-      stepInitialize()
     }
     else {
       isServe = false
@@ -517,6 +549,9 @@ function goalAnimation() {
   }
 }
 function setCenterFrame(title, content) {
+  if(title == "Score change tennis - full score"){
+    title = 'Score'
+  }
   document.getElementById('stateLabels').style.display = 'none'
   document.getElementById('center_rect').setAttribute('fill-opacity', 0.5)
   center_text = capitalizeWords(title.split(" ")).join(' ')
@@ -703,7 +738,7 @@ function handleEventData(data) {
 
   var newEvents = new Array()
   Object.values(events).forEach((event) => {
-    if(event['type'] != 'timeinfo' && event['type'] != 'periodscore' )
+    if(event['type'] != 'timeinfo' && event['type'] != 'periodscore' && event['type'] != "periodstart" )
     newEvents.push({
         name: event['name'], 
         type: event['type'], 
@@ -714,17 +749,28 @@ function handleEventData(data) {
         game_points: event['game_points'],
         game_score: event['game_score']
       })
-    if(event['type'] == "score_change_tennis")
-    newEvents.push({
-        name: event['name'], 
-        type: 'score_change_tennis1',
-        team: event['team'], 
-        updated_uts: event['updated_uts'],
-        uts: event['uts'],
-        _tid: event['_tid'],
-        game_points: event['game_points'],
-        game_score: event['game_score']
-      })
+      if(event['type'] == "score_change_tennis")
+      newEvents.push({
+          name: event['name'], 
+          type: 'score_change_tennis1',
+          team: event['team'], 
+          updated_uts: event['updated_uts'],
+          uts: event['uts'],
+          _tid: event['_tid'],
+          game_points: event['game_points'],
+          game_score: event['game_score']
+        })
+      if(event['type'] == "first_serve_fault")
+        newEvents.push({
+          name: event['name'], 
+          type: 'first_serve_fault1',
+          team: event['team'], 
+          updated_uts: event['updated_uts'],
+          uts: event['uts'],
+          _tid: event['_tid'],
+          game_points: event['game_points'],
+          game_score: event['game_score']
+        })
   })
   newEvents.forEach((newEvent) => {
     let flag = 1
