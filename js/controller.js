@@ -2,6 +2,8 @@ var socket;
 
 var currentState = 0
 
+var isLimitedCov = false;
+
 var updated_uts1 = 0, updated_uts = 0
 var currentTime, matchStartDate;
 var ptime, setTimer, stopTime = 0
@@ -51,6 +53,11 @@ function countdown() {
       var days = Math.floor(hours / 24)
       setCenterFrame('Not Started', days + 'D ' + hour + 'H ' + minute + 'M ' + second + 'S')
     }
+    
+    if(isLimitedCov){
+      setCenterFrame('Limited Covarage', homeScore + ' - ' + awayScore)
+    }
+    
     ttt++;
     if (currentState == 0) {
       if (gameState.length > 0) {
@@ -609,12 +616,15 @@ function setCenterFrame(title, content) {
   document.getElementById('center_rect').setAttribute('fill-opacity', 0.5)
   center_text = capitalizeWords(title.split(" ")).join(' ')
   document.getElementById('center_text').textContent = center_text
+  titleWidth = document.getElementById('center_text').getBBox().width + 40
   document.getElementById('center_rect').setAttribute('height', 140)
   document.getElementById('bottom_text').textContent = content
   document.getElementById('ball').setAttribute('x', 100000)
   document.getElementById('ball').setAttribute('y', 100000)
   document.getElementById('ball_shadow').setAttribute('cx', 100000)
   document.getElementById('ball_shadow').setAttribute('cy', 100000)
+  document.getElementById('center_rect').setAttribute('width', max(380, titleWidth))
+  document.getElementById('center_rect').setAttribute('x', 400 - max(380, titleWidth) / 2)
 }
 function resetCenterFrame() {
   document.getElementById('center_rect').setAttribute('fill-opacity', 0)
@@ -697,6 +707,10 @@ function handleEventData(data) {
   var match = data['match']
 
   if (match) {
+    if(match['status']['name'] == 'Interrupted' ){
+      isLimitedCov = true
+    }
+    else isLimitedCov = false
     bestofsets = match['bestofsets']
     setSets()
     var teams = match['teams']
