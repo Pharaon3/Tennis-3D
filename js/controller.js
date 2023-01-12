@@ -7,6 +7,7 @@ var currentTime, matchStartDate;
 var ptime, setTimer, stopTime = 0
 var serveSide, isServe;
 var serveTeam;
+var bestofsets;
 
 var topLeft = 123, topPosition = 238
 var pitchX = 700, pitchY = 112
@@ -40,7 +41,7 @@ var isGoal
 function countdown() {
   var interval = setInterval(function () {
     changeScreenSize()
-    if(matchStartDate){
+    if (matchStartDate) {
       var seconds = Math.floor((matchStartDate - currentDate.getTime()) / 1000)
       var second = seconds % 60
       var minutes = Math.floor(seconds / 60)
@@ -63,12 +64,13 @@ function countdown() {
       }
       t += 1 / 101
       ballPosition()
-      if(x1 == x2 && y1 == y2) bounceBall()
+      if (x1 == x2 && y1 == y2) bounceBall()
       else kickBall()
     }
   }, timeInterval)
 }
 function load() {
+  bestofsets = 2;
   serveSide = -1;
   serveTeam = 'home'
   isServe = false;
@@ -93,13 +95,13 @@ function load() {
   const urlParams = new URLSearchParams(window.location.search);
   const eventId = Number(urlParams.get('eventId'));
 
-  socket=new WebSocket("wss://gamecast.betdata.pro:8443");
-  socket.onopen=function(e) {
+  socket = new WebSocket("wss://gamecast.betdata.pro:8443");
+  socket.onopen = function (e) {
     //socket.send(JSON.stringify({r:"authenticate", a:{key:"*******"}}));
-    socket.send(JSON.stringify({r:"subscribe_event", a:{id:eventId}}));
+    socket.send(JSON.stringify({ r: "subscribe_event", a: { id: eventId } }));
   };
 
-  socket.onmessage=function(e) {
+  socket.onmessage = function (e) {
     var data = JSON.parse(e.data);
 
     if (data.r == 'event') {
@@ -109,19 +111,19 @@ function load() {
   };
 }
 function bounceBall() {
-  if(!setTimer)return
+  if (!setTimer) return
   tt = t * 2
-  if(tt > 1) tt = tt - 1
+  if (tt > 1) tt = tt - 1
   tt = t
   x_1 = mapX(x, y)
   y_1 = ((y * y) / hp + y) / 2
   document.getElementById('ball').setAttribute('x', x_b + w2 - ballRadius / 2 + topLeft)
-  document.getElementById('ball').setAttribute('y',y_b - ballRadius + topPosition - 20 + 20 * (tt - 0.5) * (tt - 0.5) * 4)
+  document.getElementById('ball').setAttribute('y', y_b - ballRadius + topPosition - 20 + 20 * (tt - 0.5) * (tt - 0.5) * 4)
   document.getElementById('ball').setAttribute('width', ballRadius)
   document.getElementById('ball_shadow').setAttribute('cx', x_b + w2 + topLeft)
   document.getElementById('ball_shadow').setAttribute('cy', y_1 + topPosition)
-  document.getElementById('ball_shadow').setAttribute('rx', ((ballRadius + 15) * H * 0.25) / (H * (1 - 4* (tt - 0.5) * (tt - 0.5)) + H))
-  document.getElementById('ball_shadow').setAttribute('ry', ((ballRadius + 15) * H * 0.25) / (H * (1 - 4* (tt - 0.5) * (tt - 0.5)) + H) / 2)
+  document.getElementById('ball_shadow').setAttribute('rx', ((ballRadius + 15) * H * 0.25) / (H * (1 - 4 * (tt - 0.5) * (tt - 0.5)) + H))
+  document.getElementById('ball_shadow').setAttribute('ry', ((ballRadius + 15) * H * 0.25) / (H * (1 - 4 * (tt - 0.5) * (tt - 0.5)) + H) / 2)
 }
 function serve_fault() {
   // body...
@@ -149,7 +151,7 @@ function ballPosition() {
   ys = y_1_1 + (y_1_2 - y_1_1) * bt
 }
 function kickBall() {
-  if(!setTimer)return
+  if (!setTimer) return
   document
     .getElementById('ball')
     .setAttribute('x', x_b + w2 - ballRadius / 2 + topLeft)
@@ -182,24 +184,26 @@ function stepInitialize() {
   if (currentState < gameState.length - 1) {
     currentState = max(currentState + 1, gameState.length - 10)
     resetCenterFrame()
-    if(gameState[currentState]['game_points']){
+    if (gameState[currentState]['game_points']) {
       document.getElementById('score').textContent = gameState[currentState]['game_points']['home'] + '-' + gameState[currentState]['game_points']['away']
     }
-    if(gameState[currentState]['type'] == 'service_taken'){
-      if(!isServe)  serveSide = - serveSide
+    if (gameState[currentState]['type'] == 'service_taken') {
+      if (!isServe) serveSide = - serveSide
       isServe = true
       serveTeam = gameState[currentState]['team'];
-      if(gameState[currentState]['team'] == 'home'){
-        if(serveSide < 0){
+      if (gameState[currentState]['team'] == 'home') {
+        if (serveSide < 0) {
           x_b = mapX(-pitchX / 2, hp * 0.3)
           y_b = mapY(-pitchX / 2, hp * 0.3)
+          setState('Serve', 'Defence', -serveSide)
         }
         else {
           x_b = mapX(-pitchX / 2, hp * 0.7)
           y_b = mapY(-pitchX / 2, hp * 0.7)
+          setState('Serve', 'Defence', -serveSide)
         }
-        x1 = - w1 ;
-        x2 = - w1 ;
+        x1 = - w1;
+        x2 = - w1;
         y1 = hp * 0.3;
         y2 = hp * 0.3;
         x_1_1 = mapX(x1, y1)
@@ -207,16 +211,18 @@ function stepInitialize() {
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
       } else {
-        if(serveSide == 0){
+        if (serveSide < 0) {
           x_b = mapX(pitchX / 2, hp * 0.3)
           y_b = mapY(pitchX / 2, hp * 0.3)
+          setState('Defence', 'Serve', serveSide)
         }
         else {
           x_b = mapX(pitchX / 2, hp * 0.7)
           y_b = mapY(pitchX / 2, hp * 0.7)
+          setState('Defence', 'Serve', serveSide)
         }
-        x1 = w1 ;
-        x2 = w1 ;
+        x1 = w1;
+        x2 = w1;
         y1 = hp * 0.3;
         y2 = hp * 0.3;
         x_1_1 = mapX(x1, y1)
@@ -225,11 +231,11 @@ function stepInitialize() {
         y_1_2 = mapY(x2, y2)
       }
     }
-    else if(gameState[currentState]['type'] == 'first_serve_fault'){
+    else if (gameState[currentState]['type'] == 'first_serve_fault') {
       isServe = false
       // serve_fault()
-      if(gameState[currentState]['team'] == 'home'){
-        x1 = - w1 ;
+      if (gameState[currentState]['team'] == 'home') {
+        x1 = - w1;
         x2 = 0;
         y1 = hp * 0.3;
         y2 = hp * 0.5;
@@ -237,9 +243,10 @@ function stepInitialize() {
         y_1_1 = mapY(x1, y1)
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
+        setState('first serve fault', 'Win', serveSide)
       }
-      if(gameState[currentState]['team'] == 'away'){
-        x1 = w1 ;
+      if (gameState[currentState]['team'] == 'away') {
+        x1 = w1;
         x2 = 0;
         y1 = hp * 0.3;
         y2 = hp * 0.5;
@@ -247,13 +254,16 @@ function stepInitialize() {
         y_1_1 = mapY(x1, y1)
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
+        setState('Win', 'first serve fault', serveSide)
       }
     }
-    else if(gameState[currentState]['type'] == 'score_change_tennis'){
+    else if (gameState[currentState]['type'] == 'score_change_tennis') {
       isServe = false
       // kickBall()
-      if(serveTeam == 'home'){
-        if(serveSide > 0){
+      if (gameState[currentState]['team'] == 'home') setState('Win', 'Loser', -serveSide)
+      else setState('Loser', 'Win', -serveSide)
+      if (serveTeam == 'home') {
+        if (serveSide > 0) {
           y1 = hp * 0.3;
           y2 = hp * 0.7;
         }
@@ -268,10 +278,10 @@ function stepInitialize() {
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
       }
-      if(serveTeam == 'away'){
+      if (serveTeam == 'away') {
         x1 = w1;
         x2 = - w1 * 0.3;
-        if(serveSide > 0){
+        if (serveSide > 0) {
           y1 = hp * 0.3;
           y2 = hp * 0.7;
         }
@@ -285,34 +295,77 @@ function stepInitialize() {
         y_1_2 = mapY(x2, y2)
       }
     }
-    else if(gameState[currentState]['type'] == 'score_change_tennis1'){
+    else if (gameState[currentState]['type'] == 'score_change_tennis1') {
       isServe = false
       // kickBall()
-      x1 = -1000 ;
+      x1 = -1000;
       x2 = 1000 * w1;
       y1 = hp * 1000;
       y2 = hp * 1000;
       setCenterFrame('score', teamNames[gameState[currentState]['team']])
+      // if(gameState[currentState]['team'] == 'home') setState('Win', 'failed', serveSide)
+      // else setState('failed', 'Win', serveSide)
     }
-    else if(gameState[currentState]['type'] == 'first_serve_fault1'){
+    else if (gameState[currentState]['type'] == 'first_serve_fault1') {
       isServe = false
       // kickBall()
-      x1 = -1000 ;
+      x1 = -1000;
       x2 = 1000 * w1;
       y1 = hp * 1000;
       y2 = hp * 1000;
       setCenterFrame('first serve fault', teamNames[gameState[currentState]['team']])
     }
-    else if(gameState[currentState]['type'] == 'ball_in_play'){
-      isServe = false
-      // kickBall()
+    else if (gameState[currentState]['type'] == 'ball_in_play') {
+      if (!isServe) serveSide = - serveSide
+      isServe = true
+      serveTeam = gameState[currentState]['team'];
+      if (gameState[currentState]['team'] == 'home') {
+        if (serveSide < 0) {
+          x_b = mapX(-pitchX / 2, hp * 0.3)
+          y_b = mapY(-pitchX / 2, hp * 0.3)
+          setState('Serve', 'Defence', -serveSide)
+        }
+        else {
+          x_b = mapX(-pitchX / 2, hp * 0.7)
+          y_b = mapY(-pitchX / 2, hp * 0.7)
+          setState('Serve', 'Defence', -serveSide)
+        }
+        x1 = - w1;
+        x2 = - w1;
+        y1 = hp * 0.3;
+        y2 = hp * 0.3;
+        x_1_1 = mapX(x1, y1)
+        y_1_1 = mapY(x1, y1)
+        x_1_2 = mapX(x2, y2)
+        y_1_2 = mapY(x2, y2)
+      } else {
+        if (serveSide < 0) {
+          x_b = mapX(pitchX / 2, hp * 0.3)
+          y_b = mapY(pitchX / 2, hp * 0.3)
+          setState('Defence', 'Serve', serveSide)
+        }
+        else {
+          x_b = mapX(pitchX / 2, hp * 0.7)
+          y_b = mapY(pitchX / 2, hp * 0.7)
+          setState('Defence', 'Serve', serveSide)
+        }
+        x1 = w1;
+        x2 = w1;
+        y1 = hp * 0.3;
+        y2 = hp * 0.3;
+        x_1_1 = mapX(x1, y1)
+        y_1_1 = mapY(x1, y1)
+        x_1_2 = mapX(x2, y2)
+        y_1_2 = mapY(x2, y2)
+      }
+
     }
-    else if(gameState[currentState]['type'] == 'timeinfo'){
+    else if (gameState[currentState]['type'] == 'timeinfo') {
       isServe = false
     }
     else {
       isServe = false
-      x1 = -1000 ;
+      x1 = -1000;
       x2 = 1000 * w1;
       y1 = hp * 1000;
       y2 = hp * 1000;
@@ -323,11 +376,11 @@ function stepInitialize() {
       setCenterFrame(gameState[currentState]['name'], teamNames[gameState[currentState]['team']])
     }
   } else {
-    if(gameState[currentState]['type'] == 'service_taken'){
-      if(!isServe)  serveSide = - serveSide
+    if (gameState[currentState]['type'] == 'service_taken') {
+      if (!isServe) serveSide = - serveSide
       isServe = true
-      if(gameState[currentState]['team'] == 'home'){
-        if(serveSide < 0){
+      if (gameState[currentState]['team'] == 'home') {
+        if (serveSide < 0) {
           x_b = mapX(-pitchX / 2, hp * 0.3)
           y_b = mapY(-pitchX / 2, hp * 0.3)
         }
@@ -335,8 +388,8 @@ function stepInitialize() {
           x_b = mapX(-pitchX / 2, hp * 0.7)
           y_b = mapY(-pitchX / 2, hp * 0.7)
         }
-        x1 = - w1 ;
-        x2 = - w1 ;
+        x1 = - w1;
+        x2 = - w1;
         y1 = hp * 0.3;
         y2 = hp * 0.3;
         x_1_1 = mapX(x1, y1)
@@ -344,7 +397,7 @@ function stepInitialize() {
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
       } else {
-        if(serveSide == 0){
+        if (serveSide > 0) {
           x_b = mapX(pitchX / 2, hp * 0.3)
           y_b = mapY(pitchX / 2, hp * 0.3)
         }
@@ -352,8 +405,8 @@ function stepInitialize() {
           x_b = mapX(pitchX / 2, hp * 0.7)
           y_b = mapY(pitchX / 2, hp * 0.7)
         }
-        x1 = w1 ;
-        x2 = w1 ;
+        x1 = w1;
+        x2 = w1;
         y1 = hp * 0.3;
         y2 = hp * 0.3;
         x_1_1 = mapX(x1, y1)
@@ -399,7 +452,7 @@ function showState() {
   document.getElementById('homeKickPolygon').style.fill = 'url(#none)'
 
 
-  if(gameState[currentState]['type'] && gameState[currentState]['type'] != 'possession'){
+  if (gameState[currentState]['type'] && gameState[currentState]['type'] != 'possession') {
     remove()
     // if(gameState[currentState]['team'])showAction()
   }
@@ -412,7 +465,7 @@ function remove() {
   document.getElementById('stateBoard').setAttribute('fill-opacity', 0)
 }
 function max(a, b) {
-  if(a > b) return a;
+  if (a > b) return a;
   return b;
 }
 function mapX(x11, y11) {
@@ -424,10 +477,10 @@ function mapY(x11, y11) {
   return y_11
 }
 function displayState() {
-  if(!setTimer)return
+  if (!setTimer) return
   var statePositionX, statePositionY
   document.getElementById('stateLabels').style.display = 'block'
-  if(gameState[currentState]['team']) document.getElementById('teamName').textContent = teamNames[gameState[currentState]['team']].toUpperCase()
+  if (gameState[currentState]['team']) document.getElementById('teamName').textContent = teamNames[gameState[currentState]['team']].toUpperCase()
   if ((y2 * 100) / hp < 30) {
     statePositionY = 500
   } else if ((y2 * 100) / hp < 70) {
@@ -443,7 +496,7 @@ function displayState() {
   document.getElementById('stateRect').setAttribute('fill-opacity', 0)
   document.getElementById('Ball_Begin').style.display = 'block'
   // document.getElementById('Ball_Track_Begin').style.display = 'block'
-  if(gameState[currentState]['team'] == 'home'){
+  if (gameState[currentState]['team'] == 'home') {
     document.getElementById('state').setAttribute('text-anchor', 'end')
     document.getElementById('teamName').setAttribute('text-anchor', 'end')
     document.getElementById('state').setAttribute('x', '-45')
@@ -452,7 +505,7 @@ function displayState() {
     document.getElementById('stateRect').setAttribute('width', '150')
     document.getElementById('jerseyCircle').setAttribute('cx', '-20')
     document.getElementById('stateJersey').setAttribute('transform', 'translate(-20, -25)')
-    document.getElementById('homeBaseColorS').setAttribute('fill', '#'+ homePlayerColor);
+    document.getElementById('homeBaseColorS').setAttribute('fill', '#' + homePlayerColor);
     document.getElementById('state').textContent = 'Possession'
     let stateRectWidth = max(document.getElementById('state').getBBox().width, document.getElementById('teamName').getBBox().width) + 55
     document.getElementById('stateRect').setAttribute('width', stateRectWidth)
@@ -468,31 +521,31 @@ function displayState() {
     document.getElementById('stateRect').setAttribute('width', '150')
     document.getElementById('jerseyCircle').setAttribute('cx', '20')
     document.getElementById('stateJersey').setAttribute('transform', 'translate(20, -25)')
-    document.getElementById('homeBaseColorS').setAttribute('fill', '#'+ awayPlayerColor);
+    document.getElementById('homeBaseColorS').setAttribute('fill', '#' + awayPlayerColor);
     document.getElementById('state').textContent = 'Possession'
     let stateRectWidth = max(document.getElementById('state').getBBox().width, document.getElementById('teamName').getBBox().width) + 55
     document.getElementById('stateRect').setAttribute('width', stateRectWidth)
     statePositionX = 500
   }
   document.getElementById('stateLabels').setAttribute('transform', 'translate(' + statePositionX + ',' + statePositionY + ')');
-  if(gameState[currentState]['type'] == 'goal' || gameState[currentState]['type'] == 'attempt_missed'){
-    if(currentState > 0){
-      if(gameState[currentState - 1]['Z']){
+  if (gameState[currentState]['type'] == 'goal' || gameState[currentState]['type'] == 'attempt_missed') {
+    if (currentState > 0) {
+      if (gameState[currentState - 1]['Z']) {
         action()
         document.getElementById('Ball_Begin').style.display = 'block'
         document.getElementById('Ball_Track_Begin').style.display = 'block'
       }
     }
-    if(currentState > 1){
-      if(gameState[currentState - 2]['Z']){
+    if (currentState > 1) {
+      if (gameState[currentState - 2]['Z']) {
         action()
         document.getElementById('Ball_Begin').style.display = 'block'
         document.getElementById('Ball_Track_Begin').style.display = 'block'
       }
     }
-    
+
   }
-  if(gameState[currentState]['type'] == 'foul' || gameState[currentState]['type'] == 'block' || gameState[currentState]['type'] == 'rebound' || gameState[currentState]['type'] == 'free_throws_awarded') action()
+  if (gameState[currentState]['type'] == 'foul' || gameState[currentState]['type'] == 'block' || gameState[currentState]['type'] == 'rebound' || gameState[currentState]['type'] == 'free_throws_awarded') action()
 }
 function action() {
   statePositionX = 475
@@ -502,10 +555,10 @@ function action() {
   document.getElementById('state').setAttribute('text-anchor', 'start')
   document.getElementById('teamName').setAttribute('text-anchor', 'start')
   document.getElementById('state').textContent = gameState[currentState]['name']
-  if(gameState[currentState]['points']){
+  if (gameState[currentState]['points']) {
     document.getElementById('state').textContent = gameState[currentState]['points'] + 'pt ' + 'missed'
-    if(gameState[currentState]['points'] == 1) document.getElementById('state').textContent = 'Free Throw missed'
-  } 
+    if (gameState[currentState]['points'] == 1) document.getElementById('state').textContent = 'Free Throw missed'
+  }
   let stateRectWidth = max(document.getElementById('state').getBBox().width, document.getElementById('teamName').getBBox().width) + 40 + 20
   let stateRectX = - (stateRectWidth) / 2 + 20
   document.getElementById('stateRect').setAttribute('width', stateRectWidth)
@@ -528,19 +581,19 @@ function goalAnimation() {
   document.getElementById('stateLabels').style.display = 'none'
   document.getElementById('score-fade-out').style.display = 'block'
   document.getElementById('fadeScore').style.display = 'block'
-  if(gameState[currentState]['team'] == 'home'){
+  if (gameState[currentState]['team'] == 'home') {
     // document.getElementById('homeBScoreFade').textContent = 5
     // document.getElementById('homeCScoreFade').textContent = 3
     // document.getElementById('homeAScoreFade').textContent = 8
     document.getElementById('homeBScoreFade').textContent = homeScore - thisScore
     document.getElementById('homeCScoreFade').textContent = thisScore
     document.getElementById('homeAScoreFade').textContent = homeScore
-    if(gameState[currentState]['name'] == '1'){
+    if (gameState[currentState]['name'] == '1') {
       document.getElementById('homeBScoreFade').setAttribute('y', 60 - 60 * t)
       document.getElementById('homeCScoreFade').setAttribute('y', 120 - 60 * t)
       document.getElementById('homeAScoreFade').setAttribute('y', 180)
     }
-    if(gameState[currentState]['name'] == '2'){
+    if (gameState[currentState]['name'] == '2') {
       document.getElementById('homeBScoreFade').setAttribute('y', -100)
       document.getElementById('homeCScoreFade').setAttribute('y', 60 - 60 * t)
       document.getElementById('homeAScoreFade').setAttribute('y', 120 - 60 * t)
@@ -549,7 +602,7 @@ function goalAnimation() {
   }
 }
 function setCenterFrame(title, content) {
-  if(title == "Score change tennis - full score"){
+  if (title == "Score change tennis - full score") {
     title = 'Score'
   }
   document.getElementById('stateLabels').style.display = 'none'
@@ -577,10 +630,48 @@ function capitalizeWords(arr) {
     return firstLetter + rest;
   });
 }
+function setState(homeState, awayState, side) {
+  document.getElementById('homeStateG').style.display = 'block'
+  document.getElementById('awayStateG').style.display = 'block'
+  document.getElementById('homeState').textContent = homeState
+  document.getElementById('awayState').textContent = awayState
+  if (side > 0) {
+    document.getElementById('homeStateG').setAttribute('transform', 'translate(90, 310)')
+    document.getElementById('awayStateG').setAttribute('transform', 'translate(680, 270)')
+  }
+  else {
+    document.getElementById('homeStateG').setAttribute('transform', 'translate(120, 270)')
+    document.getElementById('awayStateG').setAttribute('transform', 'translate(710, 310)')
+  }
+}
+function removeState() {
+  document.getElementById('homeStateG').style.display = 'none'
+  document.getElementById('awayStateG').style.display = 'none'
+}
+function setSets(){
+  if(bestofsets == 3){
+    document.getElementById('tableName4').style.display = 'none'
+    document.getElementById('tableName5').style.display = 'none'
+    document.getElementById('homeScore4').style.display = 'none'
+    document.getElementById('homeScore5').style.display = 'none'
+    document.getElementById('awayScore4').style.display = 'none'
+    document.getElementById('awayScore5').style.display = 'none'
+
+    document.getElementById('tableName1').setAttribute('x', 410)
+    document.getElementById('homeScore1').setAttribute('x', 410)
+    document.getElementById('awayScore1').setAttribute('x', 410)
+    document.getElementById('tableName2').setAttribute('x', 490)
+    document.getElementById('tableName3').setAttribute('x', 570)
+    document.getElementById('homeScore2').setAttribute('x', 490)
+    document.getElementById('homeScore3').setAttribute('x', 570)
+    document.getElementById('awayScore2').setAttribute('x', 490)
+    document.getElementById('awayScore3').setAttribute('x', 570)
+  }
+}
 
 var dob = 0
 var gameState = new Array()
-var gameType= new Array()
+var gameType = new Array()
 var newEvents = new Array()
 var lastEvents = new Array()
 var awayteamname, hometeamname
@@ -606,6 +697,8 @@ function handleEventData(data) {
   var match = data['match']
 
   if (match) {
+    bestofsets = match['bestofsets']
+    setSets()
     var teams = match['teams']
     periodlength = match['periodlength']
     var hometeam = teams['home']
@@ -615,12 +708,14 @@ function handleEventData(data) {
     teamNames['home'] = hometeamname;
     teamNames['away'] = awayteamname;
     // hometeamname = 'This team name is longer than 19 characters'
-    if(hometeamname.length > 19){
+    if (hometeamname.length > 19) {
       teamNames['home'] = hometeamname.substr(0, 17) + '...';
     }
-    if(awayteamname.length > 19){
+    if (awayteamname.length > 19) {
       teamNames['away'] = awayteamname.substr(0, 17) + '...';
     }
+    document.getElementById('homeStateN').textContent = teamNames['home']
+    document.getElementById('awayStateN').textContent = teamNames['away']
     document.getElementById('homeTeamName').textContent = teamNames['home']
     document.getElementById('awayTeamName').textContent = teamNames['away']
     document.getElementById('period').textContent = match['status']['name']
@@ -631,8 +726,8 @@ function handleEventData(data) {
     document.getElementById('setScore').textContent = homeScore + ' - ' + awayScore
     // Period Score Setting
     let currentPeriod = 1;
-    if(match['periods'] != null){
-      if(match['periods']['p1']){
+    if (match['periods'] != null) {
+      if (match['periods']['p1']) {
         document.getElementById('homeScore1').textContent = match['periods']['p1']['home']
         document.getElementById('awayScore1').textContent = match['periods']['p1']['away']
         currentPeriod = 2
@@ -641,7 +736,7 @@ function handleEventData(data) {
         document.getElementById('homeScore1').textContent = '-'
         document.getElementById('awayScore1').textContent = '-'
       }
-      if(match['periods']['p2']){
+      if (match['periods']['p2']) {
         document.getElementById('homeScore2').textContent = match['periods']['p2']['home']
         document.getElementById('awayScore2').textContent = match['periods']['p2']['away']
       }
@@ -649,7 +744,7 @@ function handleEventData(data) {
         document.getElementById('homeScore2').textContent = '-'
         document.getElementById('awayScore2').textContent = '-'
       }
-      if(match['periods']['p3']){
+      if (match['periods']['p3']) {
         document.getElementById('homeScore3').textContent = match['periods']['p3']['home']
         document.getElementById('awayScore3').textContent = match['periods']['p3']['away']
       }
@@ -662,18 +757,12 @@ function handleEventData(data) {
       document.getElementById('homeScore1').textContent = '-'
       document.getElementById('awayScore1').textContent = '-'
     }
-    
+
     // match['numberofperiods'] == 2
-    if(match['numberofperiods'] == 2){
+    if (match['numberofperiods'] == 2) {
       document.getElementById('homeScore3').style.display = 'none';
       document.getElementById('awayScore3').style.display = 'none';
-      document.getElementById('homeScore1').setAttribute('x', 427)
-      document.getElementById('homeScore2').setAttribute('x', 557)
-      document.getElementById('awayScore1').setAttribute('x', 427)
-      document.getElementById('awayScore2').setAttribute('x', 557)
 
-      document.getElementById('tableName1').setAttribute('x', 427)
-      document.getElementById('tableName2').setAttribute('x', 557)
       document.getElementById('tableName1').textContent = '1 HALF'
       document.getElementById('tableName2').textContent = '2 HALF'
       document.getElementById('tableName3').style.display = 'none';
@@ -681,16 +770,6 @@ function handleEventData(data) {
     else {
       document.getElementById('homeScore3').style.display = 'block';
       document.getElementById('awayScore3').style.display = 'block';
-      document.getElementById('homeScore1').setAttribute('x', 395)
-      document.getElementById('homeScore2').setAttribute('x', 460)
-      document.getElementById('homeScore3').setAttribute('x', 525)
-      document.getElementById('awayScore1').setAttribute('x', 395)
-      document.getElementById('awayScore2').setAttribute('x', 460)
-      document.getElementById('awayScore3').setAttribute('x', 525)
-
-      document.getElementById('tableName1').setAttribute('x', 395)
-      document.getElementById('tableName2').setAttribute('x', 460)
-      document.getElementById('tableName3').setAttribute('x', 525)
 
       document.getElementById('tableName1').textContent = '1st Set'
       document.getElementById('tableName2').textContent = '2nd Set'
@@ -698,14 +777,14 @@ function handleEventData(data) {
       document.getElementById('tableName3').style.display = 'block';
     }
 
-    if(match['status']['name'] == 'Ended'){ //Match End
+    if (match['status']['name'] == 'Ended') { //Match End
       setCenterFrame('Match End', homeScore + ' : ' + awayScore)
     }
-    if(match['status']['name'] == 'Break'){ //Break time
+    if (match['status']['name'] == 'Break') { //Break time
       setCenterFrame('Break', homeScore + ' : ' + awayScore)
     }
 
-    if(match['status']['name'] == 'Not started'){ //Match End
+    if (match['status']['name'] == 'Not started') { //Match End
       const currentDate = new Date;
       upCommingTime = currentDate.getTime() / 1000 - match['updated_uts']
       // var seconds = Math.floor(updated_uts / 1000)
@@ -719,15 +798,15 @@ function handleEventData(data) {
       matchStartDate = date.getTime()
     }
 
-    if(match['p'] == 31) {
+    if (match['p'] == 31) {
       setTimer = false
       setCenterFrame('Break', homeScore + ':' + awayScore)
     }
-    if(match['p'] == 32) {
+    if (match['p'] == 32) {
       setTimer = false
       setCenterFrame('Halftime', homeScore + ':' + awayScore)
     }
-    if(match['p'] == 33) {
+    if (match['p'] == 33) {
       setTimer = false
       setCenterFrame('Break', homeScore + ':' + awayScore)
     }
@@ -738,39 +817,39 @@ function handleEventData(data) {
 
   var newEvents = new Array()
   Object.values(events).forEach((event) => {
-    if(event['type'] != 'timeinfo' && event['type'] != 'periodscore' && event['type'] != "periodstart" )
-    newEvents.push({
-        name: event['name'], 
-        type: event['type'], 
-        team: event['team'], 
+    if (event['type'] != 'timeinfo' && event['type'] != 'periodscore' && event['type'] != "periodstart")
+      newEvents.push({
+        name: event['name'],
+        type: event['type'],
+        team: event['team'],
         updated_uts: event['updated_uts'],
         uts: event['uts'],
         _tid: event['_tid'],
         game_points: event['game_points'],
         game_score: event['game_score']
       })
-      if(event['type'] == "score_change_tennis")
+    if (event['type'] == "score_change_tennis")
       newEvents.push({
-          name: event['name'], 
-          type: 'score_change_tennis1',
-          team: event['team'], 
-          updated_uts: event['updated_uts'],
-          uts: event['uts'],
-          _tid: event['_tid'],
-          game_points: event['game_points'],
-          game_score: event['game_score']
-        })
-      if(event['type'] == "first_serve_fault")
-        newEvents.push({
-          name: event['name'], 
-          type: 'first_serve_fault1',
-          team: event['team'], 
-          updated_uts: event['updated_uts'],
-          uts: event['uts'],
-          _tid: event['_tid'],
-          game_points: event['game_points'],
-          game_score: event['game_score']
-        })
+        name: event['name'],
+        type: 'score_change_tennis1',
+        team: event['team'],
+        updated_uts: event['updated_uts'],
+        uts: event['uts'],
+        _tid: event['_tid'],
+        game_points: event['game_points'],
+        game_score: event['game_score']
+      })
+    if (event['type'] == "first_serve_fault")
+      newEvents.push({
+        name: event['name'],
+        type: 'first_serve_fault1',
+        team: event['team'],
+        updated_uts: event['updated_uts'],
+        uts: event['uts'],
+        _tid: event['_tid'],
+        game_points: event['game_points'],
+        game_score: event['game_score']
+      })
   })
   newEvents.forEach((newEvent) => {
     let flag = 1
@@ -788,11 +867,11 @@ function handleInfoData(data) {
   var jerseys = data1['jerseys']
   homePlayerColor = jerseys['home']['player']['base']
   awayPlayerColor = jerseys['away']['player']['base']
-  document.getElementById('homeBaseColorS').setAttribute('fill', '#'+ homePlayerColor);
-  document.getElementById('homeBaseColor').setAttribute('fill', '#'+ homePlayerColor);
-  document.getElementById('awayBaseColor').setAttribute('fill', '#'+ awayPlayerColor);
-  document.getElementById('homeBaseColorT').setAttribute('fill', '#'+ homePlayerColor);
-  document.getElementById('awayBaseColorT').setAttribute('fill', '#'+ awayPlayerColor);
+  document.getElementById('homeBaseColorS').setAttribute('fill', '#' + homePlayerColor);
+  document.getElementById('homeBaseColor').setAttribute('fill', '#' + homePlayerColor);
+  document.getElementById('awayBaseColor').setAttribute('fill', '#' + awayPlayerColor);
+  document.getElementById('homeBaseColorT').setAttribute('fill', '#' + homePlayerColor);
+  document.getElementById('awayBaseColorT').setAttribute('fill', '#' + awayPlayerColor);
 }
 function changeScreenSize() {
   screenHeight = window.innerHeight
@@ -805,6 +884,6 @@ function changeScreenSize() {
   document.getElementById('svg').setAttribute('height', 425 * scale)
 }
 function min(a, b) {
-  if(a > b) return b;
+  if (a > b) return b;
   return a;
 }

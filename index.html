@@ -119,28 +119,28 @@
             <text id="substitutionInPlayer" fill="#fff" font-size="16" font-family="InriaSans" x="835" y="618"
               fill-opacity="0.9" text-anchor="end"> </text>
           </g>
-          <g id='homeStateG' transform='translate(120, 270)'>
+          <g id='homeStateG' transform='translate(120, 270)' style="display: none;">
             <line x1="0" y1="-15" x2="0" y2="15" style="
                 stroke: rgb(205, 205, 255);
                 stroke-width: 2;
               " stroke-opacity='1' />
             <text id="homeState" fill="#fff" font-size="14" font-family="InriaSans" x="5" y="-3" fill-opacity="0.9"
-              text-anchor="start"> ballstate
+              text-anchor="start"> 
             </text>
             <text id="homeStateN" fill="#a1e36f" font-size="14" font-family="InriaSans" x="5" y="12" fill-opacity="0.9"
-              text-anchor="start"> holder
+              text-anchor="start"> 
             </text>
           </g>
-          <g id='awayStateG' transform='translate(710, 310)'>
+          <g id='awayStateG' transform='translate(710, 310)' style="display: none;">
             <line x1="0" y1="-15" x2="0" y2="15" style="
                 stroke: rgb(205, 205, 255);
                 stroke-width: 2;
               " stroke-opacity='1' />
             <text id="awayState" fill="#fff" font-size="14" font-family="InriaSans" x="-5" y="-3" fill-opacity="0.9"
-              text-anchor="end"> ballstate
+              text-anchor="end"> 
             </text>
             <text id="awayStateN" fill="#a1e36f" font-size="14" font-family="InriaSans" x="-5" y="12" fill-opacity="0.9"
-              text-anchor="end"> holder
+              text-anchor="end"> 
             </text>
           </g>
 
@@ -254,13 +254,17 @@
                 fill-opacity='0' />
               <rect id="scoreTable" x="330" y="325" width="290" height="70" rx="2" ry="2" fill='#204265'
                 fill-opacity='0.5' />
-              <text id="tableName1" fill="#fff" font-size="10" font-family="InriaSans" x="395" y="317"
+              <text id="tableName1" fill="#fff" font-size="10" font-family="InriaSans" x="390" y="317"
                 fill-opacity="0.71" text-anchor="middle">1st Set</text>
-              <text id="tableName2" fill="#fff" font-size="10" font-family="InriaSans" x="460" y="317"
+              <text id="tableName2" fill="#fff" font-size="10" font-family="InriaSans" x="440" y="317"
                 fill-opacity="0.71" text-anchor="middle">2nd Set</text>
-              <text id="tableName3" fill="#fff" font-size="10" font-family="InriaSans" x="525" y="317"
+              <text id="tableName3" fill="#fff" font-size="10" font-family="InriaSans" x="490" y="317"
                 fill-opacity="0.71" text-anchor="middle">3rd Set</text>
-              <g id='scoreTableJerseyHome' transform='translate(345, 343)'>
+              <text id="tableName4" fill="#fff" font-size="10" font-family="InriaSans" x="540" y="317"
+                fill-opacity="0.71" text-anchor="middle">4th Set</text>
+              <text id="tableName5" fill="#fff" font-size="10" font-family="InriaSans" x="590" y="317"
+                fill-opacity="0.71" text-anchor="middle">5th Set</text>
+              <g id='scoreTableJerseyHome' transform='translate(355, 343)'>
                 <g fill="none" fill-rule="evenodd" filter="url(#shadow)" transform="scale(0.08)">
                   <g transform="translate(-150, -150)">
                     <defs>
@@ -320,7 +324,7 @@
                   </g>
                 </g>
               </g>
-              <g id='scoreTableJerseyAway' transform='translate(345, 377)'>
+              <g id='scoreTableJerseyAway' transform='translate(355, 377)'>
                 <g fill="none" fill-rule="evenodd" filter="url(#shadow)" transform="scale(0.08)">
                   <g transform="translate(-150, -150)">
                     <defs>
@@ -380,21 +384,29 @@
                   </g>
                 </g>
               </g>
-              <line id="scoreTableMiddleLine" x1="330" y1="360" x2="620" y2="360"
+              <!-- <line id="scoreTableMiddleLine" x1="330" y1="360" x2="620" y2="360"
                 style=" stroke: rgb(10, 10, 10); stroke-width: 1; " stroke-opacity='0.8' />
               <line id="scoreTableVerticalLine" x1="360" y1="325" x2="360" y2="395"
-                style=" stroke: rgb(10, 10, 10); stroke-width: 1; " stroke-opacity='0.8' />
-              <text id="homeScore1" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="395" y="350"
+                style=" stroke: rgb(10, 10, 10); stroke-width: 1; " stroke-opacity='0.8' /> -->
+              <text id="homeScore1" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="390" y="350"
                 fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
-              <text id="homeScore2" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="460" y="350"
+              <text id="homeScore2" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="440" y="350"
                 fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
-              <text id="homeScore3" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="525" y="350"
+              <text id="homeScore3" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="490" y="350"
                 fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
-              <text id="awayScore1" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="395" y="380"
+              <text id="homeScore4" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="540" y="350"
                 fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
-              <text id="awayScore2" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="460" y="380"
+              <text id="homeScore5" fill="#acf" font-size="18" font-family="InriaSans-Bold" x="590" y="350"
+                  fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
+              <text id="awayScore1" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="390" y="380"
                 fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
-              <text id="awayScore3" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="525" y="380"
+              <text id="awayScore2" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="440" y="380"
+                fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
+              <text id="awayScore3" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="490" y="380"
+                fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
+              <text id="awayScore4" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="540" y="380"
+                fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
+              <text id="awayScore5" fill="#afa" font-size="18" font-family="InriaSans-Bold" x="590" y="380"
                 fill-opacity="1" text-anchor="middle" font-weight="900">-</text>
             </g>
           </g>
