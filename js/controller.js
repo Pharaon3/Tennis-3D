@@ -1,6 +1,7 @@
 var socket;
 
 var currentState = 0
+var gameCount = 1;
 
 var isLimitedCov = false, isperiodscore =  false;
 
@@ -257,7 +258,7 @@ function stepInitialize() {
         y_1_1 = mapY(x1, y1)
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
-        setState('first serve fault', 'Point', serveSide)
+        setState('first serve fault', '', serveSide)
       }
       if (gameState[currentState]['team'] == 'away') {
         x1 = w1;
@@ -268,7 +269,7 @@ function stepInitialize() {
         y_1_1 = mapY(x1, y1)
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
-        setState('Point', 'first serve fault', serveSide)
+        setState('', 'first serve fault', serveSide)
       }
     }
     else if (gameState[currentState]['type'] == 'score_change_tennis') {
@@ -659,12 +660,12 @@ function setState(homeState, awayState, side) {
   document.getElementById('homeState').textContent = homeState
   document.getElementById('awayState').textContent = awayState
   if (side > 0) {
-    document.getElementById('homeStateG').setAttribute('transform', 'translate(90, 310)')
+    document.getElementById('homeStateG').setAttribute('transform', 'translate(100, 300)')
     document.getElementById('awayStateG').setAttribute('transform', 'translate(680, 270)')
   }
   else {
     document.getElementById('homeStateG').setAttribute('transform', 'translate(120, 270)')
-    document.getElementById('awayStateG').setAttribute('transform', 'translate(710, 310)')
+    document.getElementById('awayStateG').setAttribute('transform', 'translate(700, 300)')
   }
 }
 function removeState() {
@@ -773,6 +774,7 @@ function handleEventData(data) {
       if (match['periods']['p1']) {
         document.getElementById('homeScore1').textContent = match['periods']['p1']['home']
         document.getElementById('awayScore1').textContent = match['periods']['p1']['away']
+        gameCount = match['periods']['p1']['home'] + match['periods']['p1']['away'] + 1
         currentPeriod = 2
       }
       else {
@@ -782,6 +784,7 @@ function handleEventData(data) {
       if (match['periods']['p2']) {
         document.getElementById('homeScore2').textContent = match['periods']['p2']['home']
         document.getElementById('awayScore2').textContent = match['periods']['p2']['away']
+        gameCount = match['periods']['p2']['home'] + match['periods']['p2']['away'] + 1
       }
       else {
         document.getElementById('homeScore2').textContent = '-'
@@ -790,11 +793,13 @@ function handleEventData(data) {
       if (match['periods']['p3']) {
         document.getElementById('homeScore3').textContent = match['periods']['p3']['home']
         document.getElementById('awayScore3').textContent = match['periods']['p3']['away']
+        gameCount = match['periods']['p3']['home'] + match['periods']['p3']['away'] + 1
       }
       else {
         document.getElementById('homeScore3').textContent = '-'
         document.getElementById('awayScore3').textContent = '-'
       }
+      document.getElementById('gameCount').textContent = 'Game ' + gameCount
     }
     else {
       document.getElementById('homeScore1').textContent = '-'
