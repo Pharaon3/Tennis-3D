@@ -739,14 +739,26 @@ function handleEventData(data) {
     teamNames['home'] = hometeamname;
     teamNames['away'] = awayteamname;
     // hometeamname = 'This team name is longer than 19 characters'
+    
+    document.getElementById('homeStateN').textContent = teamNames['home']
+    document.getElementById('awayStateN').textContent = teamNames['away']
+    if(teamNames['home'].indexOf('/') > -1 ) {
+      let homeName = teamNames['home'].split("/");
+      document.getElementById('homeStateN').textContent = homeName[0];
+      document.getElementById('homeStateN1').textContent = homeName[1];
+      document.getElementById('homeStateLine').setAttribute('y2', 27)
+      
+      let awayName = teamNames['away'].split("/");
+      document.getElementById('awayStateN').textContent = awayName[0];
+      document.getElementById('awayStateN1').textContent = awayName[1];
+      document.getElementById('awayStateLine').setAttribute('y2', 27)
+    }
     if (hometeamname.length > 19) {
       teamNames['home'] = hometeamname.substr(0, 17) + '...';
     }
     if (awayteamname.length > 19) {
       teamNames['away'] = awayteamname.substr(0, 17) + '...';
     }
-    document.getElementById('homeStateN').textContent = teamNames['home']
-    document.getElementById('awayStateN').textContent = teamNames['away']
     document.getElementById('homeTeamName').textContent = teamNames['home']
     document.getElementById('awayTeamName').textContent = teamNames['away']
     document.getElementById('period').textContent = match['status']['name']
