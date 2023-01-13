@@ -124,6 +124,7 @@ function load() {
       handleEventData(data.d);
     }
   };
+  document.getElementById('link').setAttribute('href', '../Tennis-2D/index.html?eventId=' + eventId)
 }
 function bounceBall() {
   if (!setTimer) return
