@@ -2,7 +2,7 @@ var socket;
 
 var currentState = 0
 
-var isLimitedCov = false;
+var isLimitedCov = false, isperiodscore =  false;
 
 var updated_uts1 = 0, updated_uts = 0
 var currentTime, matchStartDate;
@@ -55,8 +55,11 @@ function countdown() {
     }
     
     if(isLimitedCov){
-      setCenterFrame('Limited Covarage', homeScore + ' - ' + awayScore)
+      setCenterFrame('Limited Coverage', 'Interrupted')
     }
+    // if(isperiodscore){
+    //   setCenterFrame('Game Won', 'Interrupted')
+    // }
     
     ttt++;
     if (currentState == 0) {
@@ -73,6 +76,10 @@ function countdown() {
       ballPosition()
       if (x1 == x2 && y1 == y2) bounceBall()
       else kickBall()
+    }
+    if (gameState[currentState] && gameState[currentState]['type'] == 'periodscore') {
+      isServe = false
+      setCenterFrame('Game Won', teamNames[gameState[currentState]['team']])
     }
   }, timeInterval)
 }
@@ -250,7 +257,7 @@ function stepInitialize() {
         y_1_1 = mapY(x1, y1)
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
-        setState('first serve fault', 'Win', serveSide)
+        setState('first serve fault', 'Point', serveSide)
       }
       if (gameState[currentState]['team'] == 'away') {
         x1 = w1;
@@ -261,14 +268,14 @@ function stepInitialize() {
         y_1_1 = mapY(x1, y1)
         x_1_2 = mapX(x2, y2)
         y_1_2 = mapY(x2, y2)
-        setState('Win', 'first serve fault', serveSide)
+        setState('Point', 'first serve fault', serveSide)
       }
     }
     else if (gameState[currentState]['type'] == 'score_change_tennis') {
       isServe = false
       // kickBall()
-      if (gameState[currentState]['team'] == 'home') setState('Win', 'Loser', -serveSide)
-      else setState('Loser', 'Win', -serveSide)
+      if (gameState[currentState]['team'] == 'home') setState('Point', '', -serveSide)
+      else setState('', 'Point', -serveSide)
       if (serveTeam == 'home') {
         if (serveSide > 0) {
           y1 = hp * 0.3;
@@ -309,7 +316,7 @@ function stepInitialize() {
       x2 = 1000 * w1;
       y1 = hp * 1000;
       y2 = hp * 1000;
-      setCenterFrame('score', teamNames[gameState[currentState]['team']])
+      setCenterFrame('Score', teamNames[gameState[currentState]['team']])
       // if(gameState[currentState]['team'] == 'home') setState('Win', 'failed', serveSide)
       // else setState('failed', 'Win', serveSide)
     }
@@ -369,6 +376,10 @@ function stepInitialize() {
     }
     else if (gameState[currentState]['type'] == 'timeinfo') {
       isServe = false
+    }
+    else if (gameState[currentState]['type'] == 'periodscore') {
+      isServe = false
+      setCenterFrame('Game Won', teamNames[gameState[currentState]['team']])
     }
     else {
       isServe = false
@@ -643,6 +654,8 @@ function capitalizeWords(arr) {
 function setState(homeState, awayState, side) {
   document.getElementById('homeStateG').style.display = 'block'
   document.getElementById('awayStateG').style.display = 'block'
+  // if(!homeState)document.getElementById('homeStateG').style.display = 'none'
+  // if(!awayState)document.getElementById('awayStateG').style.display = 'none'
   document.getElementById('homeState').textContent = homeState
   document.getElementById('awayState').textContent = awayState
   if (side > 0) {
@@ -711,6 +724,10 @@ function handleEventData(data) {
       isLimitedCov = true
     }
     else isLimitedCov = false
+    // if(match['type'] == 'periodscore' ){
+    //   isperiodscore = true
+    // }
+    // else isperiodscore = false
     bestofsets = match['bestofsets']
     setSets()
     var teams = match['teams']
@@ -831,7 +848,7 @@ function handleEventData(data) {
 
   var newEvents = new Array()
   Object.values(events).forEach((event) => {
-    if (event['type'] != 'timeinfo' && event['type'] != 'periodscore' && event['type'] != "periodstart")
+    if (event['type'] != 'timeinfo' && event['type'] != "periodstart")
       newEvents.push({
         name: event['name'],
         type: event['type'],
