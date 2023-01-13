@@ -763,7 +763,7 @@ function handleEventData(data) {
     }
     document.getElementById('homeTeamName').textContent = teamNames['home']
     document.getElementById('awayTeamName').textContent = teamNames['away']
-    document.getElementById('period').textContent = match['status']['name']
+    document.getElementById('period').textContent = capitalizeWords(match['status']['name'].split(" ")).join(' ')
     // Score Setting
     var result = match['result']
     if (result['home']) homeScore = result['home']
